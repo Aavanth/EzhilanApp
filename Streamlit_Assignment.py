@@ -20,8 +20,11 @@ selected_sub_categories = st.multiselect("Select Sub_Categories", sub_categories
 filtered_df = df[(df["Category"] == selected_category) & (df["Sub_Category"].isin(selected_sub_categories))]
 
 # Line chart of sales for selected items
-sales_by_sub_category = filtered_df.groupby("Sub_Category").sum()["Sales"]
-st.line_chart(sales_by_sub_category)
+if not filtered_df.empty:
+    sales_over_time = filtered_df.groupby(pd.Grouper(key='Order_Date', freq='M')).sum()['Sales']
+    st.line_chart(sales_over_time, use_container_width=True)
+else:
+    st.write("No data available for the selected items.")
 
 # Metrics for selected items
 total_sales = filtered_df["Sales"].sum()
